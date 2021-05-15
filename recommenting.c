@@ -1,59 +1,84 @@
 #include "recommenting.h"
 
-#define MAX_COMMENT_SIZE  80
-#define MAX_STR_SIZE      100
 
-bool is_comment_begining(char * str){
-	if (*str == '/' && *(str + 1) == '*')
-		return true;
-	else
-		return false;
+#define MAX_STR_NUMBER  150
+#define MAX_STR_LEN 200
+#define MAX_COMMENT_SIZE 256
+
+
+void str_fill(char* str, char symb){
+    while (*str != '\0'){
+        *str = symb;
+        str ++;
+    }
 }
 
-bool is_comment_end(char * str){
-	if (*str == '\\' && *(str + 1) == '*')
-		return true;
-	else
-		return false;
+void str_writing(FILE_TEXT** arr_filestructures, int i, int j, char* tmp_str){
+    if (strstr(arr_filestructures[i]->filestr[j], "//") != NULL){
+        strcat(arr_filestructures[i]->filestr[j], tmp_str);
+    }
+    else{
+        strcat(arr_filestructures[i]->filestr[j], "//");
+        strcat(arr_filestructures[i]->filestr[j], tmp_str);
+    }
 }
 
-void recomment(FILE* input, FILE* output){ // function changes comments in text from "/**/" format to "//" format
-    char *str      = NULL;
-    char *tmp_str  = NULL;
-    unsigned int c = 0;
+void recomment(FILE_TEXT** arr_filestructures, int n_files) { // function changes comments in text from "/**/" format to "//" format
+    int k = 0;
+    char tmp_str[MAX_COMMENT_SIZE] = {'\0'};
+    for (int i = 0; i < n_files; ++i){
+        for (int j = 0; j < MAX_STR_NUMBER; ++j){
+            k = 0;
+            while (arr_filestructures[i]->filestr[j][k] != '\0') {
+                if (arr_filestructures[i]->filestr[j][k] == '/' && arr_filestructures[i]->filestr[j][k + 1] == '*') {
+                    delete_symb(arr_filestructures[i]->filestr[j], k);
+                    delete_symb(arr_filestructures[i]->filestr[j], k);
+                    if (strstr(arr_filestructures[i]->filestr[j], "*/") != NULL) { // если комментарий в одной строке
+                        str_fill(tmp_str, '\0');
 
-	while(!feof(input)){
-		fgets(str, MAX_STR_SIZE, input);
-
-		for (int i = 0; i < strlen(str); ++i){
-			if (is_comment_begining(str)){
-				str += 2;
-				i += 2;
-				while (!is_comment_end(str)){
-					tmp_str = (char*)malloc(MAX_COMMENT_SIZE * sizeof(char));
-
-					*tmp_str = *str;
-					tmp_str++;
-					c++;
-					str++;
-					i++;
-				}
-				str += 2;
-				i += 2;
-			}
-			else
-				fputc(*str, output);
-		}
-
-		tmp_str -= c;
-		if (tmp_str != NULL){
-			fputc('/', output);
-			fputc('/', output);
-			for (int i = 0; i < strlen(tmp_str); ++i){
-				fputc(*tmp_str, output);
-				tmp_str++;
-			}
-		}
-	}
-	free(tmp_str);
+                        while (!(arr_filestructures[i]->filestr[j][k] == '*' &&
+                                 arr_filestructures[i]->filestr[j][k + 1] == '/')) {
+                            tmp_str[strlen(tmp_str)] = arr_filestructures[i]->filestr[j][k];
+                            delete_symb(arr_filestructures[i]->filestr[j], k);
+                        }
+                        delete_symb(arr_filestructures[i]->filestr[j], k);
+                        delete_symb(arr_filestructures[i]->filestr[j], k);
+                        str_writing(arr_filestructures, i, j, tmp_str);
+                        if (arr_filestructures[i]->filestr[j][strlen(arr_filestructures[i]->filestr[j]) != '\n']){
+                            arr_filestructures[i]->filestr[j][strlen(arr_filestructures[i]->filestr[j])] = '\n';
+                        }
+                    } else{
+                        while (strstr(arr_filestructures[i]->filestr[j], "*/") == NULL) {
+                            str_fill(tmp_str, '\0');
+                            while (arr_filestructures[i]->filestr[j][k] != '\n' &&
+                                   arr_filestructures[i]->filestr[j][k] != '\0') {
+                                tmp_str[strlen(tmp_str)] = arr_filestructures[i]->filestr[j][k];
+                                delete_symb(arr_filestructures[i]->filestr[j], k);
+                            }
+                            delete_symb(arr_filestructures[i]->filestr[j], k);
+                            str_writing(arr_filestructures, i, j, tmp_str);
+                            k = 0;
+                            if (arr_filestructures[i]->filestr[j][ strlen(arr_filestructures[i]->filestr[j]) ] != '\n'){
+                                arr_filestructures[i]->filestr[j][ strlen(arr_filestructures[i]->filestr[j]) ] = '\n';
+                            }
+                            j++;
+                        }
+                        str_fill(tmp_str, '\0');
+                        while (!(arr_filestructures[i]->filestr[j][k] == '*' &&
+                                 arr_filestructures[i]->filestr[j][k + 1] == '/')) {
+                            tmp_str[strlen(tmp_str)] = arr_filestructures[i]->filestr[j][k];
+                            delete_symb(arr_filestructures[i]->filestr[j], k);
+                        }
+                        delete_symb(arr_filestructures[i]->filestr[j], k);
+                        delete_symb(arr_filestructures[i]->filestr[j], k);
+                        str_writing(arr_filestructures, i, j, tmp_str);
+                        if (arr_filestructures[i]->filestr[j][strlen(arr_filestructures[i]->filestr[j]) != '\n']){
+                            arr_filestructures[i]->filestr[j][strlen(arr_filestructures[i]->filestr[j])] = '\n';
+                        }
+                    }
+                }
+                k++;
+            }
+        }
+    }
 }
