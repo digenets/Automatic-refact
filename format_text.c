@@ -171,9 +171,27 @@ void format_text(FILE_TEXT** arr_filestructures, int nFiles){
             }
         }
     }
-    int i = 0;
+
     int j = 0;
+    int c = 0;
+    int k = 0;
     char tmp_str2[MAX_STR_LEN] = {'\0'};
+    for (int i = 0; i < nFiles; i++){
+        while (file_text[i][j] != '\0'){
+            if (file_text[i][j] != '\n'){
+            arr_filestructures[i]->filestr[c][k] = file_text[i][j];
+            k++;
+            j++;
+            }
+            else{
+                arr_filestructures[i]->filestr[c][k] = file_text[i][j];
+                c++;
+                j++;
+                k = 0;
+            }
+        }
+    }
+
 }
 
 
