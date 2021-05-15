@@ -1,8 +1,8 @@
 #include "recommenting.h"
 
 
-#define MAX_STR_NUMBER  300
-#define MAX_STR_LEN 120
+#define MAX_STR_NUMBER  150
+#define MAX_STR_LEN 200
 #define MAX_COMMENT_SIZE 256
 
 
@@ -10,13 +10,6 @@ void str_fill(char* str, char symb){
     while (*str != '\0'){
         *str = symb;
         str ++;
-    }
-}
-
-void delete_symb(char str[], int i){
-    while (str[i] != '\0'){
-        str[i] = str[i+1];
-        i++;
     }
 }
 
@@ -33,8 +26,9 @@ void str_writing(FILE_TEXT** arr_filestructures, int i, int j, char* tmp_str){
 void recomment(FILE_TEXT** arr_filestructures, int n_files) { // function changes comments in text from "/**/" format to "//" format
     int k = 0;
     char tmp_str[MAX_COMMENT_SIZE] = {'\0'};
-    for (int i = 0; i < n_files; i++){
-        for (int j = 0; j < MAX_STR_NUMBER; j++){
+    for (int i = 0; i < n_files; ++i){
+        for (int j = 0; j < MAX_STR_NUMBER; ++j){
+            k = 0;
             while (arr_filestructures[i]->filestr[j][k] != '\0') {
                 if (arr_filestructures[i]->filestr[j][k] == '/' && arr_filestructures[i]->filestr[j][k + 1] == '*') {
                     delete_symb(arr_filestructures[i]->filestr[j], k);
@@ -64,8 +58,8 @@ void recomment(FILE_TEXT** arr_filestructures, int n_files) { // function change
                             delete_symb(arr_filestructures[i]->filestr[j], k);
                             str_writing(arr_filestructures, i, j, tmp_str);
                             k = 0;
-                            if (arr_filestructures[i]->filestr[j][strlen(arr_filestructures[i]->filestr[j]) != '\n']){
-                                arr_filestructures[i]->filestr[j][strlen(arr_filestructures[i]->filestr[j])] = '\n';
+                            if (arr_filestructures[i]->filestr[j][ strlen(arr_filestructures[i]->filestr[j]) ] != '\n'){
+                                arr_filestructures[i]->filestr[j][ strlen(arr_filestructures[i]->filestr[j]) ] = '\n';
                             }
                             j++;
                         }

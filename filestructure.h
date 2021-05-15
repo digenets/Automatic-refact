@@ -1,8 +1,9 @@
 #pragma once
 
-#define MAX_STR_NUMBER  300
-#define MAX_STR_LEN 120
+#define MAX_STR_NUMBER  150
+#define MAX_STR_LEN 200
 #define MAX_HEADER_NAMESIZE 30
+#define MAX_HEADERS_NUMBER 10
 
 typedef struct FILE_TEXT {
     unsigned int file_number;
