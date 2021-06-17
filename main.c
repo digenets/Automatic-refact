@@ -4,7 +4,6 @@
 #include "format_text.h"
 #include "recommenting.h"
 
-
 #define MAX_STR_NUMBER  150
 #define MAX_STR_LEN 200
 

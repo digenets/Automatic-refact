@@ -194,6 +194,8 @@ void format_variables(FILE_TEXT** arr_filestructures, int n_files){
             }
         }
     }
+
+    /*
     for (int i = 0; i < n_files; ++i){
         for (int j = 0; j < MAX_STR_NUMBER; ++j){
             for (int k = 0; k < vars_number(varmap); k++)
@@ -206,5 +208,5 @@ void format_variables(FILE_TEXT** arr_filestructures, int n_files){
 
             }
         }
-    }
+    } */
 }
